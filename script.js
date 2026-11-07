@@ -1,6 +1,6 @@
 const SHEET_ID = "1NsClrqn1jNee1gEn8dsAqBagXyEdfVPv_rWuWrtM0Tg";
-const QUESTIONS_URL = "https://script.google.com/macros/s/AKfycby0XYChVmtdBU945IZF1rezG2iGe8YPYHdL9yV99nq8I0hG0Fo6eyNb5sEC6_FmDwLHUA/exec";
-const CODES_URL = "https://script.google.com/macros/s/AKfycby1V6xzOG7jhi9cPxH7FYejWO0jt4-5rbxnWSP1vlCDZqHdE3TzwWhnhl-dEQrGcWHHBA/exec";
+const QUESTIONS_URL = "https://script.google.com/macros/s/AKfycbw-tuMZb3oCR-_KwhXPUWmvNxbUyV3-OUc367QyxklkdDcVJ9h4j8-OIOYVq_GFfucgoA/exec";
+const CODES_URL = "ВСТАВ_URL_СКРИПТА_З_КОДАМИ";
 const DEFAULT_START = { h: 18, min: 0 };
 const DEFAULT_DURATION_MIN = 60;
 const TIMER_INTERVAL_MS = 30 * 1000;
@@ -135,7 +135,7 @@ function buildRow(ev) {
 async function loadSheet(name) {
   const key = `umh-sheet-${name}`;
   try {
-    const res = await fetch(CODES_URL);
+    const res = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${name}`);
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error("bad response");
@@ -417,14 +417,18 @@ function initSecret() {
   }
 }
 
-initTheme();
-setGreeting();
-$("empty-instagram").href = $("instagram-link").href;
-initToggle();
-initAskForm();
-initSecret();
+function safely(fn) {
+  try { fn(); } catch (err) {}
+}
+
 loadSchedule();
 loadProject();
+safely(initTheme);
+safely(setGreeting);
+safely(() => { $("empty-instagram").href = $("instagram-link").href; });
+safely(initToggle);
+safely(initAskForm);
+safely(initSecret);
 
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") return;
