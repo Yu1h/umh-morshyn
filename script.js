@@ -274,8 +274,8 @@ async function loadSchedule() {
 async function loadProject() {
   const result = await loadSheet("Projects");
   if (!result.data) return;
-  const p = result.data[0];
-  if (!p || String(p.active).trim().toUpperCase() !== "TRUE") {
+  const p = result.data.find((row) => String(row.active).trim().toUpperCase() === "TRUE");
+  if (!p) {
     $("project-card").hidden = true;
     return;
   }
